@@ -36,11 +36,19 @@ interface IncomeStatementData {
   businessName: string;
   period: string;
   revenue: number;
+  revenueVat: number;
+  revenueExclusive: number;
   cogs: number;
+  cogsVat: number;
+  cogsExclusive: number;
   grossProfit: number;
   operatingExpenses: number;
+  operatingExpensesVat: number;
+  operatingExpensesExclusive: number;
   operatingProfit: number;
   otherIncomeExpenses: number;
+  otherIncomeExpensesVat: number;
+  otherIncomeExpensesExclusive: number;
   tax: number;
   netProfit: number;
 }
@@ -60,11 +68,19 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
     businessName: "POS Business",
     period: period,
     revenue: 0,
+    revenueVat: 0,
+    revenueExclusive: 0,
     cogs: 0,
+    cogsVat: 0,
+    cogsExclusive: 0,
     grossProfit: 0,
     operatingExpenses: 0,
+    operatingExpensesVat: 0,
+    operatingExpensesExclusive: 0,
     operatingProfit: 0,
     otherIncomeExpenses: 0,
+    otherIncomeExpensesVat: 0,
+    otherIncomeExpensesExclusive: 0,
     tax: 0,
     netProfit: 0
   });
@@ -217,6 +233,17 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
         // Tax calculation (using a placeholder for now)
         const tax = 0;
 
+        // Calculate VAT amounts (assuming 18% VAT rate for Tanzania)
+        const vatRate = 0.18;
+        const revenueVat = revenue * vatRate / (1 + vatRate);
+        const revenueExclusive = revenue - revenueVat;
+        const cogsVat = cogs * vatRate / (1 + vatRate);
+        const cogsExclusive = cogs - cogsVat;
+        const operatingExpensesVat = operatingExpenses * vatRate / (1 + vatRate);
+        const operatingExpensesExclusive = operatingExpenses - operatingExpensesVat;
+        const otherIncomeExpensesVat = otherIncomeExpenses * vatRate / (1 + vatRate);
+        const otherIncomeExpensesExclusive = otherIncomeExpenses - otherIncomeExpensesVat;
+
         // Calculate net profit
         const netProfit = operatingProfit + otherIncomeExpenses - tax;
 
@@ -225,11 +252,19 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
           businessName: "POS Business",
           period: period,
           revenue,
+          revenueVat,
+          revenueExclusive,
           cogs,
+          cogsVat,
+          cogsExclusive,
           grossProfit,
           operatingExpenses,
+          operatingExpensesVat,
+          operatingExpensesExclusive,
           operatingProfit,
           otherIncomeExpenses,
+          otherIncomeExpensesVat,
+          otherIncomeExpensesExclusive,
           tax,
           netProfit
         });
@@ -333,14 +368,16 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
             
             {/* Income Statement Table - Restructured to match specification */}
             <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-4 py-2 border-b">
+              <div className="grid grid-cols-5 gap-4 py-2 border-b">
                 <div className="font-semibold">Section</div>
                 <div className="font-semibold text-right">Description</div>
-                <div className="font-semibold text-right">Amount (TZS)</div>
+                <div className="font-semibold text-right">Amount Inclusive (TZS)</div>
+                <div className="font-semibold text-right">VAT Amount (TZS)</div>
+                <div className="font-semibold text-right">Amount Exclusive (TZS)</div>
               </div>
               
               {/* Section 1: Revenue (Sales) */}
-              <div className="grid grid-cols-3 gap-4 py-2">
+              <div className="grid grid-cols-5 gap-4 py-2">
                 <div className="font-semibold">1. Revenue (Sales)</div>
                 <div className="flex items-center justify-end gap-2">
                   <span>Total sales to customers - Total sales returns</span>
@@ -354,10 +391,12 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
                   </Button>
                 </div>
                 <div className="text-right font-semibold">{incomeStatementData.revenue.toLocaleString()}</div>
+                <div className="text-right font-semibold">{incomeStatementData.revenueVat.toLocaleString()}</div>
+                <div className="text-right font-semibold">{incomeStatementData.revenueExclusive.toLocaleString()}</div>
               </div>
               
               {/* Section 2: Cost of Goods Sold (COGS) */}
-              <div className="grid grid-cols-3 gap-4 py-2">
+              <div className="grid grid-cols-5 gap-4 py-2">
                 <div className="font-semibold">2. Cost of Goods Sold (COGS)</div>
                 <div className="flex items-center justify-end gap-2">
                   <span>Cost of items sold — includes purchases, transport, and other direct costs</span>
@@ -371,11 +410,13 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
                   </Button>
                 </div>
                 <div className="text-right font-semibold">({incomeStatementData.cogs.toLocaleString()})</div>
+                <div className="text-right font-semibold">{incomeStatementData.cogsVat.toLocaleString()}</div>
+                <div className="text-right font-semibold">{incomeStatementData.cogsExclusive.toLocaleString()}</div>
               </div>
               
               {/* = Gross Profit */}
-              <div className="grid grid-cols-3 gap-4 py-2 border-t border-b">
-                <div className="font-semibold">= Gross Profit</div>
+              <div className="grid grid-cols-5 gap-4 py-2 border-t border-b">
+                <div className="font-semibold">= Gross Profit/Loss</div>
                 <div className="flex items-center justify-end gap-2">
                   <span>Revenue − COGS</span>
                   <Button 
@@ -388,10 +429,12 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
                   </Button>
                 </div>
                 <div className="text-right font-semibold">{incomeStatementData.grossProfit.toLocaleString()}</div>
+                <div className="text-right font-semibold">{(incomeStatementData.revenueVat - incomeStatementData.cogsVat).toLocaleString()}</div>
+                <div className="text-right font-semibold">{(incomeStatementData.revenueExclusive - incomeStatementData.cogsExclusive).toLocaleString()}</div>
               </div>
               
               {/* Section 3: Operating Expenses */}
-              <div className="grid grid-cols-3 gap-4 py-2">
+              <div className="grid grid-cols-5 gap-4 py-2">
                 <div className="font-semibold">3. Operating Expenses</div>
                 <div className="flex items-center justify-end gap-2">
                   <span>Rent, salaries, utilities, admin, etc.</span>
@@ -405,13 +448,15 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
                   </Button>
                 </div>
                 <div className="text-right font-semibold">({incomeStatementData.operatingExpenses.toLocaleString()})</div>
+                <div className="text-right font-semibold">{incomeStatementData.operatingExpensesVat.toLocaleString()}</div>
+                <div className="text-right font-semibold">{incomeStatementData.operatingExpensesExclusive.toLocaleString()}</div>
               </div>
               
               {/* = Operating Profit */}
-              <div className="grid grid-cols-3 gap-4 py-2 border-t border-b">
-                <div className="font-semibold">= Operating Profit</div>
+              <div className="grid grid-cols-5 gap-4 py-2 border-t border-b">
+                <div className="font-semibold">= Operating Profit/Loss</div>
                 <div className="flex items-center justify-end gap-2">
-                  <span>Gross Profit − Operating Expenses</span>
+                  <span>Gross Profit/Loss − Operating Expenses</span>
                   <Button 
                     variant="ghost" 
                     size="icon"
@@ -422,10 +467,12 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
                   </Button>
                 </div>
                 <div className="text-right font-semibold">{incomeStatementData.operatingProfit.toLocaleString()}</div>
+                <div className="text-right font-semibold">{(incomeStatementData.revenueVat - incomeStatementData.cogsVat - incomeStatementData.operatingExpensesVat).toLocaleString()}</div>
+                <div className="text-right font-semibold">{(incomeStatementData.revenueExclusive - incomeStatementData.cogsExclusive - incomeStatementData.operatingExpensesExclusive).toLocaleString()}</div>
               </div>
               
               {/* Section 4: Other Income / Expenses */}
-              <div className="grid grid-cols-3 gap-4 py-2">
+              <div className="grid grid-cols-5 gap-4 py-2">
                 <div className="font-semibold">4. Other Income / Expenses</div>
                 <div className="flex items-center justify-end gap-2">
                   <span>Interest, asset sales, etc.</span>
@@ -441,13 +488,15 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
                 <div className="text-right font-semibold">
                   {incomeStatementData.otherIncomeExpenses >= 0 ? '+' : ''}{incomeStatementData.otherIncomeExpenses.toLocaleString()}
                 </div>
+                <div className="text-right font-semibold">{incomeStatementData.otherIncomeExpensesVat.toLocaleString()}</div>
+                <div className="text-right font-semibold">{incomeStatementData.otherIncomeExpensesExclusive.toLocaleString()}</div>
               </div>
               
               {/* Section 5: Tax (Income Tax) */}
-              <div className="grid grid-cols-3 gap-4 py-2">
+              <div className="grid grid-cols-5 gap-4 py-2">
                 <div className="font-semibold">5. Tax (Income Tax)</div>
                 <div className="flex items-center justify-end gap-2">
-                  <span>Based on profit before tax</span>
+                  <span>Based on profit/loss before tax</span>
                   <Button 
                     variant="ghost" 
                     size="icon"
@@ -458,13 +507,15 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
                   </Button>
                 </div>
                 <div className="text-right font-semibold">({incomeStatementData.tax.toLocaleString()})</div>
+                <div className="text-right font-semibold">0</div>
+                <div className="text-right font-semibold">0</div>
               </div>
               
               {/* = Net Profit */}
-              <div className="grid grid-cols-3 gap-4 py-2 font-bold text-lg border-t-2 border-b-2">
-                <div className="font-bold">= Net Profit</div>
+              <div className="grid grid-cols-5 gap-4 py-2 font-bold text-lg border-t-2 border-b-2">
+                <div className="font-bold">= Net Profit/Loss</div>
                 <div className="flex items-center justify-end gap-2">
-                  <span>Final profit after all costs and tax</span>
+                  <span>Final profit/Loss after all costs and tax</span>
                   <Button 
                     variant="ghost" 
                     size="icon"
@@ -475,6 +526,8 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
                   </Button>
                 </div>
                 <div className="text-right font-bold">{incomeStatementData.netProfit.toLocaleString()}</div>
+                <div className="text-right font-bold">{(incomeStatementData.revenueVat - incomeStatementData.cogsVat - incomeStatementData.operatingExpensesVat + incomeStatementData.otherIncomeExpensesVat - incomeStatementData.tax).toLocaleString()}</div>
+                <div className="text-right font-bold">{(incomeStatementData.revenueExclusive - incomeStatementData.cogsExclusive - incomeStatementData.operatingExpensesExclusive + incomeStatementData.otherIncomeExpensesExclusive).toLocaleString()}</div>
               </div>
             </div>
             

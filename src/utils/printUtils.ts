@@ -1347,7 +1347,9 @@ export class PrintUtils {
               <tr>
                 <th>Section</th>
                 <th class="text-right">Description</th>
-                <th class="text-right">Amount (TZS)</th>
+                <th class="text-right">Amount Inclusive (TZS)</th>
+                <th class="text-right">VAT Amount (TZS)</th>
+                <th class="text-right">Amount Exclusive (TZS)</th>
               </tr>
             </thead>
             <tbody>
@@ -1355,41 +1357,57 @@ export class PrintUtils {
                 <td class="font-semibold">1. Revenue (Sales)</td>
                 <td class="text-right">Total sales to customers</td>
                 <td class="text-right font-semibold">${data.revenue.toLocaleString()}</td>
+                <td class="text-right font-semibold">${data.revenueVat.toLocaleString()}</td>
+                <td class="text-right font-semibold">${data.revenueExclusive.toLocaleString()}</td>
               </tr>
               <tr>
                 <td class="font-semibold">2. Cost of Goods Sold (COGS)</td>
                 <td class="text-right">Cost of items sold — includes purchases, transport, and other direct costs</td>
                 <td class="text-right font-semibold">${formatAmount(data.cogs, true)}</td>
+                <td class="text-right font-semibold">${data.cogsVat.toLocaleString()}</td>
+                <td class="text-right font-semibold">${data.cogsExclusive.toLocaleString()}</td>
               </tr>
               <tr class="border-t border-b">
-                <td class="font-semibold">= Gross Profit</td>
+                <td class="font-semibold">= Gross Profit/Loss</td>
                 <td class="text-right">Revenue − COGS</td>
                 <td class="text-right font-semibold">${data.grossProfit.toLocaleString()}</td>
+                <td class="text-right font-semibold">${(data.revenueVat - data.cogsVat).toLocaleString()}</td>
+                <td class="text-right font-semibold">${(data.revenueExclusive - data.cogsExclusive).toLocaleString()}</td>
               </tr>
               <tr>
                 <td class="font-semibold">3. Operating Expenses</td>
                 <td class="text-right">Rent, salaries, utilities, admin, etc.</td>
                 <td class="text-right font-semibold">${formatAmount(data.operatingExpenses, true)}</td>
+                <td class="text-right font-semibold">${data.operatingExpensesVat.toLocaleString()}</td>
+                <td class="text-right font-semibold">${data.operatingExpensesExclusive.toLocaleString()}</td>
               </tr>
               <tr class="border-t border-b">
-                <td class="font-semibold">= Operating Profit</td>
-                <td class="text-right">Gross Profit − Operating Expenses</td>
+                <td class="font-semibold">= Operating Profit/Loss</td>
+                <td class="text-right">Gross Profit/Loss − Operating Expenses</td>
                 <td class="text-right font-semibold">${data.operatingProfit.toLocaleString()}</td>
+                <td class="text-right font-semibold">${(data.revenueVat - data.cogsVat - data.operatingExpensesVat).toLocaleString()}</td>
+                <td class="text-right font-semibold">${(data.revenueExclusive - data.cogsExclusive - data.operatingExpensesExclusive).toLocaleString()}</td>
               </tr>
               <tr>
                 <td class="font-semibold">4. Other Income / Expenses</td>
                 <td class="text-right">Interest, asset sales, etc.</td>
                 <td class="text-right font-semibold">${formatOtherIncome(data.otherIncomeExpenses)}</td>
+                <td class="text-right font-semibold">${data.otherIncomeExpensesVat.toLocaleString()}</td>
+                <td class="text-right font-semibold">${data.otherIncomeExpensesExclusive.toLocaleString()}</td>
               </tr>
               <tr>
                 <td class="font-semibold">5. Tax (Income Tax)</td>
-                <td class="text-right">Based on profit before tax</td>
+                <td class="text-right">Based on profit/loss before tax</td>
                 <td class="text-right font-semibold">${formatAmount(data.tax, true)}</td>
+                <td class="text-right font-semibold">${data.tax.toLocaleString()}</td>
+                <td class="text-right font-semibold">0</td>
               </tr>
               <tr class="border-t-2 border-b-2">
-                <td class="font-bold">= Net Profit</td>
-                <td class="text-right">Final profit after all costs and tax</td>
+                <td class="font-bold">= Net Profit/Loss</td>
+                <td class="text-right">Final profit/Loss after all costs and tax</td>
                 <td class="text-right font-bold">${data.netProfit.toLocaleString()}</td>
+                <td class="text-right font-bold">${(data.revenueVat - data.cogsVat - data.operatingExpensesVat + data.otherIncomeExpensesVat - data.tax).toLocaleString()}</td>
+                <td class="text-right font-bold">${(data.revenueExclusive - data.cogsExclusive - data.operatingExpensesExclusive + data.otherIncomeExpensesExclusive).toLocaleString()}</td>
               </tr>
             </tbody>
           </table>

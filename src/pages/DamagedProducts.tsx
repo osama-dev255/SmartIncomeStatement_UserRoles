@@ -91,7 +91,7 @@ export const DamagedProducts = ({ username, onBack, onLogout }: { username: stri
         toast({
           title: "Error",
           description: "Failed to load data",
-          variant: "destructive"
+          variant: "success"
         });
       } finally {
         setLoading(false);
@@ -106,7 +106,7 @@ export const DamagedProducts = ({ username, onBack, onLogout }: { username: stri
       toast({
         title: "Error",
         description: "Please fill in required fields",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -134,7 +134,7 @@ export const DamagedProducts = ({ username, onBack, onLogout }: { username: stri
       toast({
         title: "Error",
         description: "Failed to create damaged product record",
-        variant: "destructive"
+        variant: "success"
       });
     }
   };
@@ -144,7 +144,7 @@ export const DamagedProducts = ({ username, onBack, onLogout }: { username: stri
       toast({
         title: "Error",
         description: "Please fill in required fields",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -169,7 +169,7 @@ export const DamagedProducts = ({ username, onBack, onLogout }: { username: stri
       toast({
         title: "Error",
         description: "Failed to update damaged product record",
-        variant: "destructive"
+        variant: "success"
       });
     }
   };
@@ -192,7 +192,7 @@ export const DamagedProducts = ({ username, onBack, onLogout }: { username: stri
       toast({
         title: "Error",
         description: "Failed to delete damaged product record",
-        variant: "destructive"
+        variant: "success"
       });
     }
   };

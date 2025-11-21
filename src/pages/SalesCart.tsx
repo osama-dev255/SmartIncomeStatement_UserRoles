@@ -148,7 +148,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
       toast({
         title: "Out of Stock",
         description: `${product.name} is currently out of stock`,
-        variant: "destructive",
+        variant: "success",
       });
       return;
     }
@@ -156,6 +156,16 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
     const existingItem = cart.find(item => item.id === product.id);
     
     if (existingItem) {
+      // Check if adding one more would exceed stock
+      if (existingItem.quantity + 1 > product.stock_quantity) {
+        toast({
+          title: "Insufficient Stock",
+          description: `${product.name} only has ${product.stock_quantity} items in stock. You cannot add more items to the cart.`,
+          variant: "success",
+        });
+        return;
+      }
+      
       setCart(cart.map(item => 
         item.id === product.id 
           ? { ...item, quantity: item.quantity + 1 } 
@@ -166,7 +176,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
         id: product.id || '',
         name: product.name,
         price: product.selling_price,
-        quantity: 0, // Changed to 0 as requested
+        quantity: 1, // Changed to 1 instead of 0
       };
       setCart([...cart, newItem]);
     }
@@ -178,6 +188,20 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
     setCart(cart.map(item => {
       if (item.id === id) {
         const newQuantity = Math.max(0, item.quantity + change);
+        // Find the product to check stock availability
+        const product = products.find(p => p.id === id);
+        
+        // Check if the new quantity exceeds available stock
+        if (product && newQuantity > product.stock_quantity) {
+          toast({
+            title: "Insufficient Stock",
+            description: `${product.name} only has ${product.stock_quantity} items in stock. You cannot sell ${newQuantity} items.`,
+            variant: "success",
+          });
+          // Return the item with maximum available stock
+          return { ...item, quantity: product.stock_quantity };
+        }
+        
         return { ...item, quantity: newQuantity };
       }
       return item;
@@ -208,9 +232,24 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
       toast({
         title: "Error",
         description: "Cart is empty",
-        variant: "destructive",
+        variant: "success",
       });
       return;
+    }
+    
+    // Check if any items in the cart exceed available stock
+    for (const item of cart) {
+      if (item.quantity > 0) {
+        const product = products.find(p => p.id === item.id);
+        if (product && item.quantity > product.stock_quantity) {
+          toast({
+            title: "Insufficient Stock",
+            description: `${product.name} only has ${product.stock_quantity} items in stock, but you're trying to sell ${item.quantity} items. Please adjust the quantity before proceeding.`,
+            variant: "success",
+          });
+          return;
+        }
+      }
     }
 
     setIsPaymentDialogOpen(true);
@@ -221,9 +260,24 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
       toast({
         title: "Error",
         description: "Cart is empty",
-        variant: "destructive",
+        variant: "success",
       });
       return;
+    }
+    
+    // Check if any items in the cart exceed available stock
+    for (const item of cart) {
+      if (item.quantity > 0) {
+        const product = products.find(p => p.id === item.id);
+        if (product && item.quantity > product.stock_quantity) {
+          toast({
+            title: "Insufficient Stock",
+            description: `${product.name} only has ${product.stock_quantity} items in stock, but you're trying to sell ${item.quantity} items. Please adjust the quantity.`,
+            variant: "success",
+          });
+          return;
+        }
+      }
     }
 
     // Check if payment method is Debt and customer details are required
@@ -231,7 +285,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
       toast({
         title: "Error",
         description: "Customer details are required for Debt transactions",
-        variant: "destructive",
+        variant: "success",
       });
       setIsCustomerDialogOpen(true); // Open customer selection dialog
       return;
@@ -241,7 +295,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
       toast({
         title: "Error",
         description: "Insufficient payment amount",
-        variant: "destructive",
+        variant: "success",
       });
       return;
     }
@@ -252,7 +306,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
       toast({
         title: "Permission Denied",
         description: "You don't have permission to create sales. Only salesmen and admins can create sales.",
-        variant: "destructive",
+        variant: "success",
       });
       return;
     }
@@ -593,11 +647,29 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
                               value={item.quantity}
                               onChange={(e) => {
                                 const newQuantity = Math.max(0, parseInt(e.target.value) || 0);
-                                setCart(cart.map(cartItem => 
-                                  cartItem.id === item.id 
-                                    ? { ...cartItem, quantity: newQuantity } 
-                                    : cartItem
-                                ));
+                                // Find the product to check stock availability
+                                const product = products.find(p => p.id === item.id);
+                                
+                                // Check if the new quantity exceeds available stock
+                                if (product && newQuantity > product.stock_quantity) {
+                                  toast({
+                                    title: "Insufficient Stock",
+                                    description: `${product.name} only has ${product.stock_quantity} items in stock. You cannot sell ${newQuantity} items.`,
+                                    variant: "destructive",
+                                  });
+                                  // Set quantity to maximum available stock
+                                  setCart(cart.map(cartItem => 
+                                    cartItem.id === item.id 
+                                      ? { ...cartItem, quantity: product.stock_quantity } 
+                                      : cartItem
+                                  ));
+                                } else {
+                                  setCart(cart.map(cartItem => 
+                                    cartItem.id === item.id 
+                                      ? { ...cartItem, quantity: newQuantity } 
+                                      : cartItem
+                                  ));
+                                }
                               }}
                               className="w-16 h-8 xs:h-9 text-center"
                             />

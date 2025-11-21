@@ -61,7 +61,7 @@ export const ExportImportManager = ({ data, dataType, onImport }: ExportImportMa
       toast({
         title: "Export Failed",
         description: `Failed to export data: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        variant: "destructive",
+        variant: "success",
       });
     }
   };
@@ -87,7 +87,7 @@ export const ExportImportManager = ({ data, dataType, onImport }: ExportImportMa
       toast({
         title: "Import Failed",
         description: "Please provide data to import",
-        variant: "destructive",
+        variant: "success",
       });
       return;
     }
@@ -138,7 +138,7 @@ export const ExportImportManager = ({ data, dataType, onImport }: ExportImportMa
               </ul>
             </div>
           ),
-          variant: "destructive",
+          variant: "success",
         });
         return;
       }
@@ -155,7 +155,7 @@ export const ExportImportManager = ({ data, dataType, onImport }: ExportImportMa
       toast({
         title: "Import Failed",
         description: `Failed to import data: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        variant: "destructive",
+        variant: "success",
       });
     }
   };

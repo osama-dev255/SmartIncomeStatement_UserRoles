@@ -27,7 +27,7 @@ export const LoginForm = ({ onLogin, onNavigate }: LoginFormProps) => {
       toast({
         title: "Error",
         description: "Please fill in all fields",
-        variant: "destructive",
+        variant: "success",
       });
       return;
     }
@@ -44,7 +44,7 @@ export const LoginForm = ({ onLogin, onNavigate }: LoginFormProps) => {
           toast({
             title: "Email Confirmation Required",
             description: "Please check your email and click the confirmation link before logging in.",
-            variant: "destructive",
+            variant: "success",
           });
           setIsLoading(false);
           return;
@@ -54,7 +54,7 @@ export const LoginForm = ({ onLogin, onNavigate }: LoginFormProps) => {
         toast({
           title: "Authentication Error",
           description: "Failed to authenticate. Please check your credentials and try again.",
-          variant: "destructive",
+          variant: "success",
         });
         setIsLoading(false);
         return;
@@ -69,7 +69,7 @@ export const LoginForm = ({ onLogin, onNavigate }: LoginFormProps) => {
       toast({
         title: "Error",
         description: "Authentication failed. Please try again.",
-        variant: "destructive",
+        variant: "success",
       });
       setIsLoading(false);
     }

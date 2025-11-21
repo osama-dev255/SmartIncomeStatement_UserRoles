@@ -78,7 +78,7 @@ export const CustomerSettlements = ({ username, onBack, onLogout }: { username: 
       toast({
         title: "Error",
         description: "Please fill in required fields",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -107,7 +107,7 @@ export const CustomerSettlements = ({ username, onBack, onLogout }: { username: 
       toast({
         title: "Error",
         description: "Please fill in required fields",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }

@@ -110,7 +110,7 @@ export const BarcodeScanner = ({ onItemsScanned, onCancel, autoAddToCart = false
         toast({
           title: "Camera Access Denied",
           description: err.message || "Please enable camera access to use the scanner",
-          variant: "destructive",
+          variant: "success",
         });
       }
     };
@@ -295,7 +295,7 @@ export const BarcodeScanner = ({ onItemsScanned, onCancel, autoAddToCart = false
         toast({
           title: "Scanner Error",
           description: "Failed to initialize barcode scanner: " + (err.message || "Unknown error"),
-          variant: "destructive",
+          variant: "success",
         });
         return;
       }
@@ -360,7 +360,7 @@ export const BarcodeScanner = ({ onItemsScanned, onCancel, autoAddToCart = false
         toast({
           title: "Scanner Error",
           description: "Camera stream not available",
-          variant: "destructive",
+          variant: "success",
         });
       }
     });
@@ -436,7 +436,7 @@ export const BarcodeScanner = ({ onItemsScanned, onCancel, autoAddToCart = false
         toast({
           title: "Product Not Found",
           description: `No product found with barcode ${barcode}`,
-          variant: "destructive",
+          variant: "success",
         });
       }
     } catch (error) {
@@ -444,7 +444,7 @@ export const BarcodeScanner = ({ onItemsScanned, onCancel, autoAddToCart = false
       toast({
         title: "Error",
         description: "Failed to fetch product information",
-        variant: "destructive",
+        variant: "success",
       });
     }
   };
@@ -499,7 +499,7 @@ export const BarcodeScanner = ({ onItemsScanned, onCancel, autoAddToCart = false
       toast({
         title: "No Items Scanned",
         description: "Please scan at least one item before proceeding",
-        variant: "destructive",
+        variant: "success",
       });
     }
   };

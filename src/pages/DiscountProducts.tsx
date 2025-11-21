@@ -82,7 +82,7 @@ export const DiscountProducts = ({ username, onBack, onLogout }: { username: str
         toast({
           title: "Error",
           description: "Failed to load data",
-          variant: "destructive"
+          variant: "success"
         });
       } finally {
         setLoading(false);
@@ -97,7 +97,7 @@ export const DiscountProducts = ({ username, onBack, onLogout }: { username: str
       toast({
         title: "Error",
         description: "Please select both discount and product",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -111,7 +111,7 @@ export const DiscountProducts = ({ username, onBack, onLogout }: { username: str
       toast({
         title: "Error",
         description: "This discount-product combination already exists",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }

@@ -45,7 +45,7 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Failed to load customers",
-        variant: "destructive"
+        variant: "success"
       });
     } finally {
       setLoading(false);
@@ -57,7 +57,7 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Customer name is required",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -86,7 +86,7 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Failed to add customer",
-        variant: "destructive"
+        variant: "success"
       });
     }
   };
@@ -139,7 +139,7 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Import Failed",
         description: "Failed to import customers",
-        variant: "destructive"
+        variant: "success"
       });
     }
   };
@@ -149,7 +149,7 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Customer name is required",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -175,7 +175,7 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Failed to update customer",
-        variant: "destructive"
+        variant: "success"
       });
     }
   };
@@ -197,7 +197,7 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Failed to delete customer",
-        variant: "destructive"
+        variant: "success"
       });
     }
   };

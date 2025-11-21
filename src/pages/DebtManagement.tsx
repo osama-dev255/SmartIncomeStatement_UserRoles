@@ -93,7 +93,7 @@ export const DebtManagement = ({ username, onBack, onLogout }: { username: strin
         toast({
           title: "Error",
           description: "Failed to load debt records",
-          variant: "destructive",
+          variant: "success",
         });
       } finally {
         setLoading(false);
@@ -108,7 +108,7 @@ export const DebtManagement = ({ username, onBack, onLogout }: { username: strin
       toast({
         title: "Error",
         description: "Please fill in required fields",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -159,7 +159,7 @@ export const DebtManagement = ({ username, onBack, onLogout }: { username: strin
       toast({
         title: "Error",
         description: "Failed to add debt record: " + (error as Error).message,
-        variant: "destructive",
+        variant: "success",
       });
     }
   };
@@ -169,7 +169,7 @@ export const DebtManagement = ({ username, onBack, onLogout }: { username: strin
       toast({
         title: "Error",
         description: "Please fill in required fields",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -220,7 +220,7 @@ export const DebtManagement = ({ username, onBack, onLogout }: { username: strin
       toast({
         title: "Error",
         description: "Failed to update debt record: " + (error as Error).message,
-        variant: "destructive",
+        variant: "success",
       });
     }
   };
@@ -243,7 +243,7 @@ export const DebtManagement = ({ username, onBack, onLogout }: { username: strin
       toast({
         title: "Error",
         description: "Failed to delete debt record: " + (error as Error).message,
-        variant: "destructive",
+        variant: "success",
       });
     }
   };

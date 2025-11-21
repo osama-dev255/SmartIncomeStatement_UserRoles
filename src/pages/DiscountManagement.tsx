@@ -98,7 +98,7 @@ export const DiscountManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Please fill in required fields",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -124,7 +124,7 @@ export const DiscountManagement = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Please fill in required fields",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }

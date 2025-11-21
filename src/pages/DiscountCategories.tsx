@@ -80,7 +80,7 @@ export const DiscountCategories = ({ username, onBack, onLogout }: { username: s
         toast({
           title: "Error",
           description: "Failed to load data",
-          variant: "destructive"
+          variant: "success"
         });
       } finally {
         setLoading(false);
@@ -95,7 +95,7 @@ export const DiscountCategories = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "Please select both discount and category",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }
@@ -109,7 +109,7 @@ export const DiscountCategories = ({ username, onBack, onLogout }: { username: s
       toast({
         title: "Error",
         description: "This discount-category combination already exists",
-        variant: "destructive"
+        variant: "success"
       });
       return;
     }

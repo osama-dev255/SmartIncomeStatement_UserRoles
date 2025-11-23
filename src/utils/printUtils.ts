@@ -128,8 +128,9 @@ export class PrintUtils {
       const tax = transaction.tax || 0;
       const discount = transaction.discount || 0;
       const total = transaction.total || (subtotal + tax - discount);
-      const amountReceived = transaction.amountReceived || total;
-      const change = transaction.change || (amountReceived - total);
+      // For credit sales, amountReceived should be 0, not default to total
+      const amountReceived = transaction.amountReceived !== undefined ? transaction.amountReceived : total;
+      const change = transaction.change !== undefined ? transaction.change : (amountReceived - total);
       
       receiptContent = `<!DOCTYPE html>
 <html>
@@ -316,10 +317,33 @@ export class PrintUtils {
     </div>
     
     <div class="payment-info">
-      <div>Amount Received:</div>
-      <div>${amountReceived.toFixed(2)}</div>
-      <div>Change:</div>
-      <div>${change.toFixed(2)}</div>
+      ${transaction.paymentMethod === "credit" ? `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <div>Payment Method:</div>
+          <div>Credit Purchase</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <div>Amount Received:</div>
+          <div>Credit</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <div>Outstanding Balance:</div>
+          <div>${total.toFixed(2)}</div>
+        </div>
+      ` : `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <div>Payment Method:</div>
+          <div>${transaction.paymentMethod}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <div>Amount Received:</div>
+          <div>${amountReceived.toFixed(2)}</div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+          <div>Change:</div>
+          <div>${change < 0 ? `Credited: ${Math.abs(change).toFixed(2)}` : change.toFixed(2)}</div>
+        </div>
+      `}
     </div>
     
     <div class="footer">
@@ -465,8 +489,9 @@ export class PrintUtils {
       const discount = transaction.discount || 0;
       // Actual total calculation (tax not included in computation)
       const total = transaction.total || (subtotal - discount);
-      const amountReceived = transaction.amountReceived || total;
-      const change = transaction.change || (amountReceived - total);
+      // For credit purchases, amountReceived should be 0, not default to total
+      const amountReceived = transaction.amountReceived !== undefined ? transaction.amountReceived : total;
+      const change = transaction.change !== undefined ? transaction.change : (amountReceived - total);
       
       receiptContent = `
         <!DOCTYPE html>
@@ -619,32 +644,38 @@ export class PrintUtils {
               `).join('')}
             </div>
             
-            <div class="totals">
-              <div class="total-row">
+            <div style="border-top: 1px dashed #000; padding-top: 10px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                 <div>Subtotal:</div>
                 <div>${subtotal.toFixed(2)}</div>
               </div>
-              <div class="total-row">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                 <div>Tax (18%):</div>
                 <div>${displayTax.toFixed(2)}</div>
               </div>
-              <div class="total-row">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                 <div>Discount:</div>
                 <div>${discount.toFixed(2)}</div>
               </div>
-              <div class="total-row">
+              <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px;">
                 <div>Total:</div>
                 <div>${total.toFixed(2)}</div>
               </div>
             </div>
             
-            <div class="payment-info">
-              <div>Payment Method:</div>
-              <div>${transaction.paymentMethod}</div>
-              <div>Amount Received:</div>
-              <div>${amountReceived.toFixed(2)}</div>
-              <div>Change:</div>
-              <div>${change.toFixed(2)}</div>
+            <div style="border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <div>Payment Method:</div>
+                <div>${transaction.paymentMethod}</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <div>Amount Received:</div>
+                <div>${amountReceived.toFixed(2)}</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <div>Change:</div>
+                <div>${change < 0 ? `Credited: ${Math.abs(change).toFixed(2)}` : change.toFixed(2)}</div>
+              </div>
             </div>
             
             <div class="footer">
@@ -804,14 +835,14 @@ export class PrintUtils {
               ${transaction.customer.email ? `<div style="font-size: 10px; margin-bottom: 2px;">Email: ${transaction.customer.email}</div>` : ''}
               ${transaction.customer.address ? `<div style="font-size: 10px; margin-bottom: 2px;">Address: ${transaction.customer.address}</div>` : ''}
               ${transaction.customer.loyaltyPoints ? `<div style="font-size: 10px; margin-bottom: 2px;">Loyalty Points: ${transaction.customer.loyaltyPoints}</div>` : ''}
-              ${transaction.customer.tax_id ? `<div style="font-size: 10px; margin-bottom: 2px;">TIN: ${transaction.customer.tax_id}</div>` : ''}
             </div>
             ` : ''}
             
             <div style="margin-bottom: 15px;">
               ${formattedItems.map((item: any) => `
                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                  <div>${item.name} (${item.quantity})</div>
+                  <div>${item.name}</div>
+                  <div>${item.quantity} x @ ${item.price.toFixed(2)}</div>
                   <div>${item.total.toFixed(2)}</div>
                 </div>
               `).join('')}
@@ -834,6 +865,36 @@ export class PrintUtils {
                 <div>Total:</div>
                 <div>${total.toFixed(2)}</div>
               </div>
+            </div>
+            
+            <div style="border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px;">
+              ${transaction.paymentMethod === "credit" ? `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                  <div>Payment Method:</div>
+                  <div>Credit Purchase</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                  <div>Amount Received:</div>
+                  <div>Credit</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                  <div>Outstanding Balance:</div>
+                  <div>${total.toFixed(2)}</div>
+                </div>
+              ` : `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                  <div>Payment Method:</div>
+                  <div>${transaction.paymentMethod}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                  <div>Amount Received:</div>
+                  <div>${amountReceived.toFixed(2)}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                  <div>Change:</div>
+                  <div>${change < 0 ? `Credited: ${Math.abs(change).toFixed(2)}` : change.toFixed(2)}</div>
+                </div>
+              `}
             </div>
             
             <div style="text-align: center; margin: 15px 0;">
@@ -1372,7 +1433,7 @@ export class PrintUtils {
               font-weight: bold;
             }
             .border-t {
-              border-top: 1px solid #ccc;
+              border-top: 1px solid #333;
             }
             .border-b {
               border-bottom: 1px solid #ccc;

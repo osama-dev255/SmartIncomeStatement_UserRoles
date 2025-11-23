@@ -55,6 +55,7 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
     phone: "",
     tax_id: ""
   });
+  const [completedPurchaseOrder, setCompletedPurchaseOrder] = useState<any>(null); // Store completed purchase order for printing
   const { toast } = useToast();
 
   // Load products and suppliers from Supabase on component mount
@@ -268,6 +269,9 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
         title: "Success",
         description: `Purchase completed successfully${(paymentMethod === "credit" || (paymentMethod === "cash" && amountReceivedNum > 0 && amountReceivedNum < total)) ? " with outstanding debt" : ""}`,
       });
+
+      // Store completed purchase order for printing
+      setCompletedPurchaseOrder(createdPurchaseOrder);
     } catch (error) {
       console.error("Error completing transaction:", error);
       toast({
@@ -446,7 +450,7 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
               <CardContent>
                 {cart.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
-                    <Package className="h-12 w-12 mx-auto mb-4 text-blue-300" />
+                    <Package className="h-12 w-12 mx-auto mb-4 text-blue-3300" />
                     <p>Your purchase cart is empty</p>
                     <p className="text-sm">Add products using the search above</p>
                   </div>
@@ -901,7 +905,7 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
                 <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => {
                   // Prepare transaction data for printing
                   const transactionData = {
-                    orderNumber: `PO-${Date.now()}`,
+                    orderNumber: completedPurchaseOrder?.order_number || `PO-${Date.now()}`,
                     date: new Date().toISOString(),
                     supplier: selectedSupplier,
                     items: cart.map(item => ({
@@ -914,8 +918,8 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
                     discount: discountAmount,
                     total: total,
                     paymentMethod: paymentMethod,
-                    amountReceived: amountReceivedNum,
-                    change: change
+                    amountReceived: (paymentMethod === "credit" ? 0 : amountReceivedNum) || 0,
+                    change: (paymentMethod === "credit" ? 0 : change) || 0
                   };
                   
                   // Print receipt

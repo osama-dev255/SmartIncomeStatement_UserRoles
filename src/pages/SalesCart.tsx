@@ -36,6 +36,7 @@ interface Customer {
   email?: string;
   phone?: string;
   tax_id?: string; // Add tax_id field
+  creditLimit?: number; // Add credit limit field
 }
 
 // Update the temporary product interface to match the Product type
@@ -122,7 +123,8 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
           address: customer.address || '',
           email: customer.email || '',
           phone: customer.phone || '',
-          tax_id: customer.tax_id || '' // Include tax_id field
+          tax_id: customer.tax_id || '', // Include tax_id field
+          creditLimit: customer.credit_limit || 0 // Include credit limit field
         }));
         setCustomers(formattedCustomers);
       } catch (error) {
@@ -295,6 +297,20 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
       return;
     }
 
+    // Check credit limit for debt transactions
+    if (paymentMethod === "debt" && selectedCustomer) {
+      // Get the full customer details to check credit limit
+      const fullCustomer = customers.find(c => c.id === selectedCustomer.id);
+      if (fullCustomer && fullCustomer.creditLimit && total > fullCustomer.creditLimit) {
+        toast({
+          title: "Credit Limit Exceeded",
+          description: `This customer's credit limit is ${formatCurrency(fullCustomer.creditLimit || 0)}, but the transaction total is ${formatCurrency(total)}. Please select a different payment method or reduce the transaction amount.`,
+          variant: "success",
+        });
+        return;
+      }
+    }
+
     if (paymentMethod === "cash" && change < 0) {
       toast({
         title: "Error",
@@ -397,6 +413,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
       // Create transaction object for printing
       const transaction = {
         id: createdSale.id || Date.now().toString(),
+        receiptNumber: createdSale.invoice_number || `INV-${Date.now()}`,
         date: createdSale.sale_date || new Date().toISOString(),
         items: cart,
         subtotal: subtotal,
@@ -404,14 +421,17 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
         discount: discountAmount,
         total: totalWithTax, // Actual total without tax effect
         paymentMethod: paymentMethod,
-        amountReceived: paymentMethod === "debt" ? 0 : (parseFloat(amountReceived) || 0),
-        change: paymentMethod === "debt" ? 0 : change,
+        amountReceived: paymentMethod === "debt" ? (parseFloat(amountReceived) || 0) : (parseFloat(amountReceived) || 0),
+        change: paymentMethod === "debt" ? (parseFloat(amountReceived) || 0) - totalWithTax : change,
         customer: selectedCustomer // Include customer information
       };
 
       // Store transaction for potential printing
       setCompletedTransaction(transaction);
-
+      
+      // Set transaction ID for the dialog
+      setTransactionId(createdSale.id || Date.now().toString());
+      
       // Show transaction complete dialog instead of toast
       setIsPaymentDialogOpen(false);
       setIsTransactionCompleteDialogOpen(true);
@@ -457,19 +477,25 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
 
   // Print receipt
   const printReceipt = () => {
-    // In a real app, this would fetch the transaction details
-    const mockTransaction = {
-      id: Date.now().toString(),
-      items: cart,
-      subtotal: subtotal,
-      tax: tax, // Display only tax (18%)
-      discount: discountAmount,
-      total: totalWithTax, // Actual total without tax effect
-      paymentMethod: paymentMethod,
-      amountReceived: parseFloat(amountReceived) || totalWithTax,
-      change: change
-    };
-    PrintUtils.printReceipt(mockTransaction);
+    // Use the completed transaction if available, otherwise create a mock transaction
+    if (completedTransaction) {
+      PrintUtils.printReceipt(completedTransaction);
+    } else {
+      // In a real app, this would fetch the transaction details
+      const mockTransaction = {
+        id: Date.now().toString(),
+        receiptNumber: `INV-${Date.now()}`,
+        items: cart,
+        subtotal: subtotal,
+        tax: tax, // Display only tax (18%)
+        discount: discountAmount,
+        total: totalWithTax, // Actual total without tax effect
+        paymentMethod: paymentMethod,
+        amountReceived: paymentMethod === "debt" ? (parseFloat(amountReceived) || 0) : (parseFloat(amountReceived) || totalWithTax),
+        change: paymentMethod === "debt" ? (parseFloat(amountReceived) || 0) - totalWithTax : change
+      };
+      PrintUtils.printReceipt(mockTransaction);
+    }
   };
 
   const handleCreateCustomer = async () => {
@@ -1079,7 +1105,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
               </Button>
               <Button 
                 onClick={completeTransaction}
-                disabled={amountReceivedNum < total || change < 0}
+                disabled={(paymentMethod !== "debt" && (amountReceivedNum < total || change < 0))}
               >
                 Complete Sale
               </Button>

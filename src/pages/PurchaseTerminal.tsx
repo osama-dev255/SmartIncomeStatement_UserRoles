@@ -224,6 +224,23 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
         await createPurchaseOrderItem(purchaseOrderItemData);
       }
 
+      // Create debt record for credit/debt transactions
+      if ((paymentMethod === "credit" || paymentMethod === "debt") && selectedSupplier) {
+        const debtData = {
+          supplier_id: selectedSupplier.id,
+          debt_type: "supplier",
+          amount: total,
+          description: `Debt for purchase order ${createdPurchaseOrder.id || 'unknown'}`,
+          status: "outstanding",
+          due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 30 days from now
+        };
+
+        const createdDebt = await createDebt(debtData);
+        if (!createdDebt) {
+          console.warn("Failed to create debt record for transaction");
+        }
+      }
+
       // Update stock quantities for each item in the cart
       for (const item of itemsWithQuantity) {
         // Find the original product to get current stock
@@ -246,7 +263,7 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
       
       toast({
         title: "Success",
-        description: "Purchase completed successfully",
+        description: `Purchase completed successfully${(paymentMethod === "credit" || paymentMethod === "debt") ? " on Credit" : ""}`,
       });
     } catch (error) {
       console.error("Error completing transaction:", error);

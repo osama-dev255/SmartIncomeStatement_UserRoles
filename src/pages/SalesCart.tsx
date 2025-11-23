@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -922,6 +923,91 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
               <User className="h-4 w-4 mr-2" />
               Add New Customer
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add New Customer Dialog */}
+      <Dialog open={isAddingNewCustomer} onOpenChange={setIsAddingNewCustomer}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-responsive-xl">Add New Customer</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="firstName">First Name *</Label>
+                <Input
+                  id="firstName"
+                  placeholder="First name"
+                  value={newCustomer.first_name}
+                  onChange={(e) => setNewCustomer({...newCustomer, first_name: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="lastName">Last Name *</Label>
+                <Input
+                  id="lastName"
+                  placeholder="Last name"
+                  value={newCustomer.last_name}
+                  onChange={(e) => setNewCustomer({...newCustomer, last_name: e.target.value})}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email address"
+                value={newCustomer.email}
+                onChange={(e) => setNewCustomer({...newCustomer, email: e.target.value})}
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="Phone number"
+                value={newCustomer.phone}
+                onChange={(e) => setNewCustomer({...newCustomer, phone: e.target.value})}
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="address">Address</Label>
+              <Textarea
+                id="address"
+                placeholder="Customer address"
+                value={newCustomer.address}
+                onChange={(e) => setNewCustomer({...newCustomer, address: e.target.value})}
+              />
+            </div>
+            
+            <div className="flex justify-end gap-3">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setIsAddingNewCustomer(false);
+                  // Reset form
+                  setNewCustomer({
+                    first_name: "",
+                    last_name: "",
+                    email: "",
+                    phone: "",
+                    address: ""
+                  });
+                }}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleCreateCustomer}>
+                Add Customer
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

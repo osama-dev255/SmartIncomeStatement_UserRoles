@@ -71,13 +71,6 @@ export const SalesDashboard = ({ username, onBack, onLogout, onNavigate }: Sales
       color: "bg-white border border-gray-200"
     },
     {
-      id: "products",
-      title: "Product Management",
-      description: "Manage product inventory and pricing",
-      icon: Package,
-      color: "bg-white border border-gray-200"
-    },
-    {
       id: "discounts",
       title: "Discount Management",
       description: "Manage promotional discounts and offers",
@@ -97,14 +90,7 @@ export const SalesDashboard = ({ username, onBack, onLogout, onNavigate }: Sales
       description: "Quickly add products to cart using barcode scanner",
       icon: Scan,
       color: "bg-white border border-gray-200"
-    },
-    {
-      id: "test-data",
-      title: "Test Data View",
-      description: "View raw data for debugging purposes",
-      icon: FileText,
-      color: "bg-yellow-50 border border-yellow-200"
-    },
+    }
   ];
   
   // Filter modules based on user role

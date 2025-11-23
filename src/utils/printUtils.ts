@@ -175,6 +175,20 @@ export class PrintUtils {
         font-size: 10px;
         margin-bottom: 10px;
       }
+      .customer-info {
+        border: none;
+        padding: 8px;
+        margin-bottom: 10px;
+        background-color: #f9f9f9;
+      }
+      .customer-name {
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+      .customer-detail {
+        font-size: 10px;
+        margin-bottom: 2px;
+      }
       .items {
         margin-bottom: 10px;
       }
@@ -260,6 +274,16 @@ export class PrintUtils {
       <div>Date: ${new Date().toLocaleDateString()}</div>
       <div>Time: ${new Date().toLocaleTimeString()}</div>
     </div>
+    
+    ${transaction.customer ? `
+    <div class="customer-info">
+      <div class="customer-name">${transaction.customer.name}</div>
+      ${transaction.customer.phone ? `<div class="customer-detail">Phone: ${transaction.customer.phone}</div>` : ''}
+      ${transaction.customer.email ? `<div class="customer-detail">Email: ${transaction.customer.email}</div>` : ''}
+      ${transaction.customer.address ? `<div class="customer-detail">Address: ${transaction.customer.address}</div>` : ''}
+      ${transaction.customer.loyaltyPoints ? `<div class="customer-detail">Loyalty Points: ${transaction.customer.loyaltyPoints}</div>` : ''}
+    </div>
+    ` : ''}
     
     <div class="items">
       ${formattedItems.map((item: any) => `
@@ -574,6 +598,15 @@ export class PrintUtils {
               <div>Time: ${new Date().toLocaleTimeString()}</div>
             </div>
             
+            ${transaction.supplier ? `
+            <div style="padding: 8px; margin-bottom: 10px; background-color: #f9f9f9;">
+              <div style="font-weight: bold; margin-bottom: 3px;">${transaction.supplier.name || transaction.supplier.contactPerson || 'Supplier'}</div>
+              ${transaction.supplier.phone ? `<div style="font-size: 10px; margin-bottom: 2px;">Phone: ${transaction.supplier.phone}</div>` : ''}
+              ${transaction.supplier.email ? `<div style="font-size: 10px; margin-bottom: 2px;">Email: ${transaction.supplier.email}</div>` : ''}
+              ${transaction.supplier.address ? `<div style="font-size: 10px; margin-bottom: 2px;">Address: ${transaction.supplier.address}</div>` : ''}
+            </div>
+            ` : ''}
+            
             <div class="items">
               ${formattedItems.map((item: any) => `
                 <div class="item">
@@ -748,7 +781,7 @@ export class PrintUtils {
       
       // Simplified mobile receipt content
       receiptContent = `
-        <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; max-height: 80%; overflow-y: auto;">
+        <div style="background: white; padding: 20px; max-width: 90%; max-height: 80%; overflow-y: auto;">
           <h2 style="text-align: center; margin-bottom: 20px;">Receipt Preview</h2>
           <div style="font-family: monospace; font-size: 14px;">
             <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
@@ -761,6 +794,16 @@ export class PrintUtils {
               <div>Receipt #: ${transaction.receiptNumber || Date.now()}</div>
               <div>${new Date().toLocaleDateString()}</div>
             </div>
+            
+            ${transaction.customer ? `
+            <div style="padding: 8px; margin-bottom: 10px; background-color: #f9f9f9;">
+              <div style="font-weight: bold; margin-bottom: 3px;">${transaction.customer.name}</div>
+              ${transaction.customer.phone ? `<div style="font-size: 10px; margin-bottom: 2px;">Phone: ${transaction.customer.phone}</div>` : ''}
+              ${transaction.customer.email ? `<div style="font-size: 10px; margin-bottom: 2px;">Email: ${transaction.customer.email}</div>` : ''}
+              ${transaction.customer.address ? `<div style="font-size: 10px; margin-bottom: 2px;">Address: ${transaction.customer.address}</div>` : ''}
+              ${transaction.customer.loyaltyPoints ? `<div style="font-size: 10px; margin-bottom: 2px;">Loyalty Points: ${transaction.customer.loyaltyPoints}</div>` : ''}
+            </div>
+            ` : ''}
             
             <div style="margin-bottom: 15px;">
               ${formattedItems.map((item: any) => `
@@ -869,7 +912,7 @@ export class PrintUtils {
       
       // Simplified mobile receipt content
       receiptContent = `
-        <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; max-height: 80%; overflow-y: auto;">
+        <div style="background: white; padding: 20px; max-width: 90%; max-height: 80%; overflow-y: auto;">
           <h2 style="text-align: center; margin-bottom: 20px;">Purchase Receipt Preview</h2>
           <div style="font-family: monospace; font-size: 14px;">
             <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
@@ -882,6 +925,15 @@ export class PrintUtils {
               <div>Order #: ${transaction.orderNumber || 'PO-' + Date.now()}</div>
               <div>${new Date().toLocaleDateString()}</div>
             </div>
+            
+            ${transaction.supplier ? `
+            <div style="padding: 8px; margin-bottom: 10px; background-color: #f9f9f9;">
+              <div style="font-weight: bold; margin-bottom: 3px;">${transaction.supplier.name || transaction.supplier.contactPerson || 'Supplier'}</div>
+              ${transaction.supplier.phone ? `<div style="font-size: 10px; margin-bottom: 2px;">Phone: ${transaction.supplier.phone}</div>` : ''}
+              ${transaction.supplier.email ? `<div style="font-size: 10px; margin-bottom: 2px;">Email: ${transaction.supplier.email}</div>` : ''}
+              ${transaction.supplier.address ? `<div style="font-size: 10px; margin-bottom: 2px;">Address: ${transaction.supplier.address}</div>` : ''}
+            </div>
+            ` : ''}
             
             <div style="margin-bottom: 15px;">
               ${formattedItems.map((item: any) => `

@@ -14,7 +14,7 @@ import { formatCurrency } from "@/lib/currency";
 import { BarcodeScanner } from "@/components/BarcodeScanner";
 import { PrintUtils } from "@/utils/printUtils";
 // Import Supabase database service
-import { getProducts, getSuppliers, updateProductStock, createSupplier, createPurchaseOrder, createPurchaseOrderItem, Product, Supplier as DatabaseSupplier } from "@/services/databaseService";
+import { getProducts, getSuppliers, updateProductStock, createSupplier, createPurchaseOrder, createPurchaseOrderItem, createDebt, Product, Supplier as DatabaseSupplier } from "@/services/databaseService";
 
 interface CartItem {
   id: string;
@@ -224,13 +224,16 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
         await createPurchaseOrderItem(purchaseOrderItemData);
       }
 
-      // Create debt record for credit/debt transactions
-      if ((paymentMethod === "credit" || paymentMethod === "debt") && selectedSupplier) {
+      // Create debt record for credit transactions or partial payments
+      if ((paymentMethod === "credit" || (paymentMethod === "cash" && amountReceivedNum > 0 && amountReceivedNum < total)) && selectedSupplier) {
+        // Calculate the amount owed (either full amount for credit or remaining balance for partial payment)
+        const amountOwed = paymentMethod === "credit" ? total : total - amountReceivedNum;
+        
         const debtData = {
           supplier_id: selectedSupplier.id,
           debt_type: "supplier",
-          amount: total,
-          description: `Debt for purchase order ${createdPurchaseOrder.id || 'unknown'}`,
+          amount: amountOwed,
+          description: `Debt for purchase order ${createdPurchaseOrder.id || 'unknown'}${paymentMethod === "cash" ? " (partial payment)" : ""}`,
           status: "outstanding",
           due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 30 days from now
         };
@@ -263,7 +266,7 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
       
       toast({
         title: "Success",
-        description: `Purchase completed successfully${(paymentMethod === "credit" || paymentMethod === "debt") ? " on Credit" : ""}`,
+        description: `Purchase completed successfully${(paymentMethod === "credit" || (paymentMethod === "cash" && amountReceivedNum > 0 && amountReceivedNum < total)) ? " with outstanding debt" : ""}`,
       });
     } catch (error) {
       console.error("Error completing transaction:", error);
@@ -622,10 +625,16 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
                             Credit
                           </div>
                         </SelectItem>
-                        <SelectItem value="debt">
+                        <SelectItem value="card">
                           <div className="flex items-center gap-2">
-                            <User className="h-4 w-4" />
-                            Debt
+                            <CreditCard className="h-4 w-4" />
+                            Card
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="mobile">
+                          <div className="flex items-center gap-2">
+                            <Download className="h-4 w-4" />
+                            Mobile Money
                           </div>
                         </SelectItem>
                       </SelectContent>

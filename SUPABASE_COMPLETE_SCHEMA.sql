@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS customers (
   date_of_birth DATE,
   loyalty_points INTEGER DEFAULT 0,
   credit_limit DECIMAL(10,2) DEFAULT 0.00,
+  tax_id VARCHAR(50),
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

@@ -281,6 +281,7 @@ export class PrintUtils {
       ${transaction.customer.phone ? `<div class="customer-detail">Phone: ${transaction.customer.phone}</div>` : ''}
       ${transaction.customer.email ? `<div class="customer-detail">Email: ${transaction.customer.email}</div>` : ''}
       ${transaction.customer.address ? `<div class="customer-detail">Address: ${transaction.customer.address}</div>` : ''}
+      ${transaction.customer.tax_id ? `<div class="customer-detail">TIN: ${transaction.customer.tax_id}</div>` : ''}
       ${transaction.customer.loyaltyPoints ? `<div class="customer-detail">Loyalty Points: ${transaction.customer.loyaltyPoints}</div>` : ''}
     </div>
     ` : ''}
@@ -604,6 +605,7 @@ export class PrintUtils {
               ${transaction.supplier.phone ? `<div style="font-size: 10px; margin-bottom: 2px;">Phone: ${transaction.supplier.phone}</div>` : ''}
               ${transaction.supplier.email ? `<div style="font-size: 10px; margin-bottom: 2px;">Email: ${transaction.supplier.email}</div>` : ''}
               ${transaction.supplier.address ? `<div style="font-size: 10px; margin-bottom: 2px;">Address: ${transaction.supplier.address}</div>` : ''}
+              ${transaction.supplier.tax_id ? `<div style="font-size: 10px; margin-bottom: 2px;">TIN: ${transaction.supplier.tax_id}</div>` : ''}
             </div>
             ` : ''}
             
@@ -802,6 +804,7 @@ export class PrintUtils {
               ${transaction.customer.email ? `<div style="font-size: 10px; margin-bottom: 2px;">Email: ${transaction.customer.email}</div>` : ''}
               ${transaction.customer.address ? `<div style="font-size: 10px; margin-bottom: 2px;">Address: ${transaction.customer.address}</div>` : ''}
               ${transaction.customer.loyaltyPoints ? `<div style="font-size: 10px; margin-bottom: 2px;">Loyalty Points: ${transaction.customer.loyaltyPoints}</div>` : ''}
+              ${transaction.customer.tax_id ? `<div style="font-size: 10px; margin-bottom: 2px;">TIN: ${transaction.customer.tax_id}</div>` : ''}
             </div>
             ` : ''}
             
@@ -932,6 +935,7 @@ export class PrintUtils {
               ${transaction.supplier.phone ? `<div style="font-size: 10px; margin-bottom: 2px;">Phone: ${transaction.supplier.phone}</div>` : ''}
               ${transaction.supplier.email ? `<div style="font-size: 10px; margin-bottom: 2px;">Email: ${transaction.supplier.email}</div>` : ''}
               ${transaction.supplier.address ? `<div style="font-size: 10px; margin-bottom: 2px;">Address: ${transaction.supplier.address}</div>` : ''}
+              ${transaction.supplier.tax_id ? `<div style="font-size: 10px; margin-bottom: 2px;">TIN: ${transaction.supplier.tax_id}</div>` : ''}
             </div>
             ` : ''}
             

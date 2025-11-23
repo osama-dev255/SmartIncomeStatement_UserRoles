@@ -35,6 +35,7 @@ interface Customer {
   address?: string;
   email?: string;
   phone?: string;
+  tax_id?: string; // Add tax_id field
 }
 
 // Update the temporary product interface to match the Product type
@@ -80,7 +81,8 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
     last_name: "",
     email: "",
     phone: "",
-    address: ""
+    address: "",
+    tax_id: ""
   }); // State for new customer data
   const { toast } = useToast();
 
@@ -119,7 +121,8 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
           loyaltyPoints: customer.loyalty_points || 0,
           address: customer.address || '',
           email: customer.email || '',
-          phone: customer.phone || ''
+          phone: customer.phone || '',
+          tax_id: customer.tax_id || '' // Include tax_id field
         }));
         setCustomers(formattedCustomers);
       } catch (error) {
@@ -486,6 +489,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
         email: newCustomer.email || "",
         phone: newCustomer.phone || "",
         address: newCustomer.address || "",
+        tax_id: newCustomer.tax_id || "",
         loyalty_points: 0,
         is_active: true
       };
@@ -500,7 +504,8 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
           loyaltyPoints: createdCustomer.loyalty_points || 0,
           address: createdCustomer.address || '',
           email: createdCustomer.email || '',
-          phone: createdCustomer.phone || ''
+          phone: createdCustomer.phone || '',
+          tax_id: createdCustomer.tax_id || ''
         };
         
         // Add the new customer to the customers list
@@ -518,7 +523,8 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
           last_name: "",
           email: "",
           phone: "",
-          address: ""
+          address: "",
+          tax_id: ""
         });
         
         toast({
@@ -987,6 +993,16 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
               />
             </div>
             
+            <div>
+              <Label htmlFor="tax_id">Tax ID (TIN)</Label>
+              <Input
+                id="tax_id"
+                placeholder="Tax Identification Number"
+                value={newCustomer.tax_id}
+                onChange={(e) => setNewCustomer({...newCustomer, tax_id: e.target.value})}
+              />
+            </div>
+            
             <div className="flex justify-end gap-3">
               <Button 
                 variant="outline" 
@@ -998,7 +1014,8 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
                     last_name: "",
                     email: "",
                     phone: "",
-                    address: ""
+                    address: "",
+                    tax_id: ""
                   });
                 }}
               >

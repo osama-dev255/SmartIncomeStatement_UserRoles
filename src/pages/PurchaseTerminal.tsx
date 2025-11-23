@@ -29,6 +29,7 @@ interface Supplier {
   contactPerson?: string;
   email?: string;
   phone?: string;
+  tax_id?: string;
 }
 
 export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: string; onBack: () => void; onLogout: () => void }) => {
@@ -51,7 +52,8 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
     name: "",
     contact_person: "",
     email: "",
-    phone: ""
+    phone: "",
+    tax_id: ""
   });
   const { toast } = useToast();
 
@@ -71,7 +73,8 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
           name: supplier.name,
           contactPerson: supplier.contact_person || '',
           email: supplier.email || '',
-          phone: supplier.phone || ''
+          phone: supplier.phone || '',
+          tax_id: supplier.tax_id || ''
         }));
         setSuppliers(formattedSuppliers);
       } catch (error) {
@@ -271,6 +274,7 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
         contact_person: newSupplier.contact_person || "",
         email: newSupplier.email || "",
         phone: newSupplier.phone || "",
+        tax_id: newSupplier.tax_id || "",
         is_active: true
       };
 
@@ -283,7 +287,8 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
           name: createdSupplier.name,
           contactPerson: createdSupplier.contact_person || '',
           email: createdSupplier.email || '',
-          phone: createdSupplier.phone || ''
+          phone: createdSupplier.phone || '',
+          tax_id: createdSupplier.tax_id || ''
         };
         
         // Add the new supplier to the suppliers list
@@ -300,7 +305,8 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
           name: "",
           contact_person: "",
           email: "",
-          phone: ""
+          phone: "",
+          tax_id: ""
         });
         
         toast({
@@ -645,7 +651,8 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
               name: "",
               contact_person: "",
               email: "",
-              phone: ""
+              phone: "",
+              tax_id: ""
             });
           }
         }}>
@@ -704,6 +711,17 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
                   />
                 </div>
                 
+                <div className="space-y-2">
+                  <Label htmlFor="taxId">Tax ID (TIN)</Label>
+                  <Input
+                    id="taxId"
+                    value={newSupplier.tax_id}
+                    onChange={(e) => setNewSupplier({...newSupplier, tax_id: e.target.value})}
+                    placeholder="Enter tax identification number"
+                    className="border-blue-200"
+                  />
+                </div>
+                
                 <div className="flex justify-end gap-2">
                   <Button 
                     variant="outline" 
@@ -714,7 +732,8 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
                         name: "",
                         contact_person: "",
                         email: "",
-                        phone: ""
+                        phone: "",
+                        tax_id: ""
                       });
                     }}
                   >

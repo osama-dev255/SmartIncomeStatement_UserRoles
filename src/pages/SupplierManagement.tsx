@@ -21,6 +21,7 @@ interface Supplier {
   email: string;
   phone: string;
   address: string;
+  tax_id?: string;
   products: string[];
   status: "active" | "inactive";
   lastOrder?: string;
@@ -38,6 +39,7 @@ export const SupplierManagement = ({ username, onBack, onLogout }: { username: s
     email: "",
     phone: "",
     address: "",
+    tax_id: "",
     products: [],
     status: "active"
   });
@@ -93,6 +95,7 @@ export const SupplierManagement = ({ username, onBack, onLogout }: { username: s
         email: newSupplier.email,
         phone: newSupplier.phone,
         address: newSupplier.address,
+        tax_id: newSupplier.tax_id || "",
         is_active: newSupplier.status === "active"
       };
 
@@ -106,6 +109,7 @@ export const SupplierManagement = ({ username, onBack, onLogout }: { username: s
           email: createdSupplier.email || '',
           phone: createdSupplier.phone || '',
           address: createdSupplier.address || '',
+          tax_id: createdSupplier.tax_id || '',
           products: [],
           status: createdSupplier.is_active ? "active" as const : "inactive" as const
         };
@@ -180,6 +184,7 @@ export const SupplierManagement = ({ username, onBack, onLogout }: { username: s
         email: editingSupplier.email,
         phone: editingSupplier.phone,
         address: editingSupplier.address,
+        tax_id: editingSupplier.tax_id || "",
         is_active: editingSupplier.status === "active"
       };
 
@@ -193,6 +198,7 @@ export const SupplierManagement = ({ username, onBack, onLogout }: { username: s
           email: updatedSupplier.email || '',
           phone: updatedSupplier.phone || '',
           address: updatedSupplier.address || '',
+          tax_id: updatedSupplier.tax_id || '',
           products: [],
           status: updatedSupplier.is_active ? "active" as const : "inactive" as const
         };
@@ -248,6 +254,7 @@ export const SupplierManagement = ({ username, onBack, onLogout }: { username: s
       email: "",
       phone: "",
       address: "",
+      tax_id: "",
       products: [],
       status: "active"
     });
@@ -414,6 +421,20 @@ export const SupplierManagement = ({ username, onBack, onLogout }: { username: s
                           ? setEditingSupplier({...editingSupplier, address: e.target.value}) 
                           : setNewSupplier({...newSupplier, address: e.target.value})
                       }
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Label htmlFor="taxId">Tax ID (TIN)</Label>
+                    <Input
+                      id="taxId"
+                      value={editingSupplier ? (editingSupplier.tax_id || "") : (newSupplier.tax_id || "")}
+                      onChange={(e) => 
+                        editingSupplier 
+                          ? setEditingSupplier({...editingSupplier, tax_id: e.target.value}) 
+                          : setNewSupplier({...newSupplier, tax_id: e.target.value})
+                      }
+                      placeholder="Enter tax identification number"
                     />
                   </div>
                   

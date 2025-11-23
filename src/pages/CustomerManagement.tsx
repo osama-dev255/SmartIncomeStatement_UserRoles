@@ -26,7 +26,8 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
     last_name: "",
     email: "",
     phone: "",
-    address: ""
+    address: "",
+    tax_id: ""
   });
   const { toast } = useToast();
 
@@ -208,7 +209,8 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
       last_name: "",
       email: "",
       phone: "",
-      address: ""
+      address: "",
+      tax_id: ""
     });
     setEditingCustomer(null);
   };
@@ -337,6 +339,20 @@ export const CustomerManagement = ({ username, onBack, onLogout }: { username: s
                           : setNewCustomer({...newCustomer, address: e.target.value})
                       }
                       placeholder="Enter address"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="taxId">Tax ID (TIN)</Label>
+                    <Input
+                      id="taxId"
+                      value={editingCustomer ? (editingCustomer.tax_id || "") : (newCustomer.tax_id || "")}
+                      onChange={(e) => 
+                        editingCustomer
+                          ? setEditingCustomer({...editingCustomer, tax_id: e.target.value})
+                          : setNewCustomer({...newCustomer, tax_id: e.target.value})
+                      }
+                      placeholder="Enter tax identification number"
                     />
                   </div>
                 </div>

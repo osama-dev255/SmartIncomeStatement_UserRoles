@@ -143,6 +143,20 @@ export const generateCustomReceipt = (transaction: any, config: ReceiptTemplateC
     `;
   }
   
+  // Generate customer info section
+  let customerInfoHtml = '';
+  if (transaction.customer) {
+    customerInfoHtml = `
+      <div style="padding: 8px; margin-bottom: 10px; background-color: #f9f9f9;">
+        <div style="font-weight: bold; margin-bottom: 3px;">${transaction.customer.name}</div>
+        ${transaction.customer.phone ? `<div style="font-size: calc(${config.fontSize} - 2px); margin-bottom: 2px;">Phone: ${transaction.customer.phone}</div>` : ''}
+        ${transaction.customer.email ? `<div style="font-size: calc(${config.fontSize} - 2px); margin-bottom: 2px;">Email: ${transaction.customer.email}</div>` : ''}
+        ${transaction.customer.address ? `<div style="font-size: calc(${config.fontSize} - 2px); margin-bottom: 2px;">Address: ${transaction.customer.address}</div>` : ''}
+        ${transaction.customer.tax_id ? `<div style="font-size: calc(${config.fontSize} - 2px); margin-bottom: 2px;">TIN: ${transaction.customer.tax_id}</div>` : ''}
+      </div>
+    `;
+  }
+  
   // Generate item details section
   let itemDetailsHtml = '';
   if (config.showItemDetails) {
@@ -312,6 +326,7 @@ export const generateCustomReceipt = (transaction: any, config: ReceiptTemplateC
       <body>
         ${businessInfoHtml}
         ${transactionDetailsHtml}
+        ${customerInfoHtml}
         ${itemDetailsHtml}
         ${totalsHtml}
         ${paymentInfoHtml}
@@ -377,6 +392,10 @@ export const generateCustomPurchaseReceipt = (transaction: any, config: Purchase
           <div>${transaction.supplier.contactPerson}</div>
         </div>
         ` : ''}
+        ${transaction.supplier.phone ? `<div class="total-row"><div>Phone:</div><div>${transaction.supplier.phone}</div></div>` : ''}
+        ${transaction.supplier.email ? `<div class="total-row"><div>Email:</div><div>${transaction.supplier.email}</div></div>` : ''}
+        ${transaction.supplier.address ? `<div class="total-row"><div>Address:</div><div>${transaction.supplier.address}</div></div>` : ''}
+        ${transaction.supplier.tax_id ? `<div class="total-row"><div>TIN:</div><div>${transaction.supplier.tax_id}</div></div>` : ''}
       </div>
     `;
   }

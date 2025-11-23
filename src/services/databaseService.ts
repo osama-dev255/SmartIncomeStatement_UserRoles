@@ -55,6 +55,7 @@ export interface Customer {
   date_of_birth?: string;
   loyalty_points?: number;
   credit_limit?: number;
+  tax_id?: string;
   is_active?: boolean;
   created_at?: string;
   updated_at?: string;

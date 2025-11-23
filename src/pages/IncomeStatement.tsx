@@ -65,7 +65,7 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
   const [period, setPeriod] = useState("January 2024");
   const [isLoading, setIsLoading] = useState(true);
   const [incomeStatementData, setIncomeStatementData] = useState<IncomeStatementData>({
-    businessName: "POS Business",
+    businessName: "POS Business Osama",
     period: period,
     revenue: 0,
     revenueVat: 0,

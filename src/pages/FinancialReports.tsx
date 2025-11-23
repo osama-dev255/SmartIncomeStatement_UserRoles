@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PrintUtils } from "@/utils/printUtils";
+import { getTaxRecords, TaxRecord } from "@/services/databaseService";
 
 interface FinancialReportsProps {
   username: string;
@@ -249,7 +250,7 @@ export const FinancialReports = ({ username, onBack, onLogout, onNavigate }: Fin
     setIsViewReportDialogOpen(true);
   };
 
-  const handleViewTaxSummary = () => {
+  const handleViewTaxSummary = async () => {
     if (!taxPeriod.startDate || !taxPeriod.endDate) {
       toast({
         title: "Error",
@@ -259,22 +260,65 @@ export const FinancialReports = ({ username, onBack, onLogout, onNavigate }: Fin
       return;
     }
     
-    const periodText = `${taxPeriod.startDate} to ${taxPeriod.endDate}`;
-    
-    const reportData: ReportData = {
-      title: "Tax Summary",
-      period: periodText,
-      data: [
-        { name: "Income Tax", value: 12000 },
-        { name: "Sales Tax", value: 8000 },
-        { name: "Property Tax", value: 5000 },
-        { name: "Total Tax Paid", value: 25000 }
-      ]
-    };
-    
-    setViewReportData(reportData);
-    setIsTaxPeriodDialogOpen(false);
-    setIsViewReportDialogOpen(true);
+    try {
+      // Fetch actual tax data for the selected period
+      const taxRecords = await getTaxRecords();
+      
+      // Filter tax records by the selected period
+      const periodStart = new Date(taxPeriod.startDate);
+      const periodEnd = new Date(taxPeriod.endDate);
+      
+      const filteredTaxRecords = taxRecords.filter(record => {
+        const recordStart = new Date(record.period_start);
+        const recordEnd = new Date(record.period_end);
+        return recordStart >= periodStart && recordEnd <= periodEnd;
+      });
+      
+      const periodText = `${taxPeriod.startDate} to ${taxPeriod.endDate}`;
+      
+      // Calculate totals by tax type
+      let incomeTax = 0;
+      let salesTax = 0;
+      let propertyTax = 0;
+      
+      filteredTaxRecords.forEach(record => {
+        switch(record.tax_type) {
+          case 'income_tax':
+            incomeTax += record.tax_amount;
+            break;
+          case 'sales_tax':
+            salesTax += record.tax_amount;
+            break;
+          case 'property_tax':
+            propertyTax += record.tax_amount;
+            break;
+        }
+      });
+      
+      const totalTaxPaid = incomeTax + salesTax + propertyTax;
+      
+      const reportData: ReportData = {
+        title: "Tax Summary",
+        period: periodText,
+        data: [
+          { name: "Income Tax", value: incomeTax },
+          { name: "Sales Tax", value: salesTax },
+          { name: "Property Tax", value: propertyTax },
+          { name: "Total Tax Paid", value: totalTaxPaid }
+        ]
+      };
+      
+      setViewReportData(reportData);
+      setIsTaxPeriodDialogOpen(false);
+      setIsViewReportDialogOpen(true);
+    } catch (error) {
+      console.error('Error fetching tax data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load tax data. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handlePrintReport = (reportType: string) => {

@@ -230,8 +230,23 @@ export const IncomeStatement = ({ username, onBack, onLogout }: IncomeStatementP
         // Other income/expenses (using a placeholder for now)
         const otherIncomeExpenses = 0;
 
-        // Tax calculation (using a placeholder for now)
-        const tax = 0;
+        // Tax calculation (using a progressive tax rate system)
+        // For demonstration, using a simplified tax calculation based on Tanzanian tax brackets
+        // In a real implementation, this would be configurable
+        const taxableIncome = operatingProfit + otherIncomeExpenses;
+        let tax = 0;
+        
+        // Simplified tax calculation (this would be more complex in reality)
+        // Assuming a progressive tax system similar to Tanzania's
+        if (taxableIncome > 0) {
+          if (taxableIncome <= 250000) {
+            tax = taxableIncome * 0.08; // 8% for first 250,000 TZS
+          } else if (taxableIncome <= 500000) {
+            tax = 20000 + (taxableIncome - 250000) * 0.2; // 8% on first 250,000 + 20% on next 250,000
+          } else {
+            tax = 70000 + (taxableIncome - 500000) * 0.3; // 8% on first 250,000 + 20% on next 250,000 + 30% on remainder
+          }
+        }
 
         // Calculate VAT amounts (assuming 18% VAT rate for Tanzania)
         const vatRate = 0.18;

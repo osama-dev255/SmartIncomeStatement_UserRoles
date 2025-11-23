@@ -238,6 +238,23 @@ export interface AccessLog {
   created_at?: string;
 }
 
+export interface TaxRecord {
+  id?: string;
+  user_id?: string;
+  tax_type: string; // income_tax, sales_tax, property_tax, etc.
+  period_start: string;
+  period_end: string;
+  taxable_amount: number;
+  tax_rate: number; // e.g., 0.18 for 18%
+  tax_amount: number;
+  description?: string;
+  status: string; // pending, paid, filed
+  payment_date?: string;
+  reference_number?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface DamagedProduct {
   id?: string;
   product_id?: string;
@@ -2662,6 +2679,97 @@ export const deleteReturnItem = async (id: string): Promise<boolean> => {
     return true;
   } catch (error) {
     console.error('Error deleting return item:', error);
+    return false;
+  }
+};
+
+// Tax Records CRUD operations
+export const getTaxRecords = async (): Promise<TaxRecord[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('tax_records')
+      .select('*')
+      .order('period_start', { ascending: false });
+      
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error('Error fetching tax records:', error);
+    return [];
+  }
+};
+
+export const getTaxRecordById = async (id: string): Promise<TaxRecord | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('tax_records')
+      .select('*')
+      .eq('id', id)
+      .single();
+      
+    if (error) throw error;
+    return data || null;
+  } catch (error) {
+    console.error('Error fetching tax record:', error);
+    return null;
+  }
+};
+
+export const createTaxRecord = async (taxRecord: Omit<TaxRecord, 'id'>): Promise<TaxRecord | null> => {
+  try {
+    // Get the current user ID from Supabase auth
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    // Add the user_id to the tax record data
+    const taxRecordWithUser = {
+      ...taxRecord,
+      user_id: user?.id || null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    
+    const { data, error } = await supabase
+      .from('tax_records')
+      .insert([taxRecordWithUser])
+      .select()
+      .single();
+      
+    if (error) throw error;
+    return data || null;
+  } catch (error) {
+    console.error('Error creating tax record:', error);
+    return null;
+  }
+};
+
+export const updateTaxRecord = async (id: string, taxRecord: Partial<TaxRecord>): Promise<TaxRecord | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('tax_records')
+      .update({ ...taxRecord, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+      
+    if (error) throw error;
+    return data || null;
+  } catch (error) {
+    console.error('Error updating tax record:', error);
+    return null;
+  }
+};
+
+export const deleteTaxRecord = async (id: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('tax_records')
+      .delete()
+      .eq('id', id);
+      
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error deleting tax record:', error);
     return false;
   }
 };

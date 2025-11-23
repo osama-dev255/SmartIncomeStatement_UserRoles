@@ -100,6 +100,23 @@ CREATE TABLE IF NOT EXISTS expenses (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Create tax_records table for better tax tracking
+CREATE TABLE IF NOT EXISTS tax_records (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tax_type VARCHAR(50) NOT NULL, -- income_tax, sales_tax, property_tax, etc.
+  period_start DATE NOT NULL,
+  period_end DATE NOT NULL,
+  taxable_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  tax_rate DECIMAL(5,4) NOT NULL, -- e.g., 0.18 for 18%
+  tax_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  description TEXT,
+  status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'filed')),
+  payment_date DATE,
+  reference_number VARCHAR(100),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_products_barcode ON products(barcode);
 CREATE INDEX IF NOT EXISTS idx_products_sku ON products(sku);
@@ -121,6 +138,7 @@ ALTER TABLE suppliers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE purchase_orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE purchase_order_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE expenses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tax_records ENABLE ROW LEVEL SECURITY;
 
 -- Create policies (adjust as needed for your security requirements)
 CREATE POLICY "Enable read access for all users" ON products FOR SELECT USING (true);
@@ -162,4 +180,9 @@ CREATE POLICY "Enable read access for all users" ON expenses FOR SELECT USING (t
 CREATE POLICY "Enable insert access for all users" ON expenses FOR INSERT WITH CHECK (true);
 CREATE POLICY "Enable update access for all users" ON expenses FOR UPDATE USING (true);
 CREATE POLICY "Enable delete access for all users" ON expenses FOR DELETE USING (true);
+
+CREATE POLICY "Enable read access for all users" ON tax_records FOR SELECT USING (true);
+CREATE POLICY "Enable insert access for all users" ON tax_records FOR INSERT WITH CHECK (true);
+CREATE POLICY "Enable update access for all users" ON tax_records FOR UPDATE USING (true);
+CREATE POLICY "Enable delete access for all users" ON tax_records FOR DELETE USING (true);
 `;

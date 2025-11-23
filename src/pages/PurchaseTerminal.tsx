@@ -605,6 +605,12 @@ export const PurchaseTerminal = ({ username, onBack, onLogout }: { username: str
                             Credit
                           </div>
                         </SelectItem>
+                        <SelectItem value="debt">
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            Debt
+                          </div>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

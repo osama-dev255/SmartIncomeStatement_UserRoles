@@ -824,7 +824,7 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="grid grid-cols-2 xs:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 xs:grid-cols-4 gap-2">
                   <Button
                     variant={paymentMethod === "cash" ? "default" : "outline"}
                     onClick={() => setPaymentMethod("cash")}
@@ -844,10 +844,18 @@ export const SalesCart = ({ username, onBack, onLogout }: SalesCartProps) => {
                   <Button
                     variant={paymentMethod === "mobile" ? "default" : "outline"}
                     onClick={() => setPaymentMethod("mobile")}
-                    className="h-16 xs:h-20 flex flex-col gap-1 btn-touch col-span-2 xs:col-span-1"
+                    className="h-16 xs:h-20 flex flex-col gap-1 btn-touch"
                   >
                     <Download className="h-5 w-5 xs:h-6 xs:w-6" />
                     <span className="text-xs xs:text-sm">Mobile Money</span>
+                  </Button>
+                  <Button
+                    variant={paymentMethod === "debt" ? "default" : "outline"}
+                    onClick={() => setPaymentMethod("debt")}
+                    className="h-16 xs:h-20 flex flex-col gap-1 btn-touch"
+                  >
+                    <User className="h-5 w-5 xs:h-6 xs:w-6" />
+                    <span className="text-xs xs:text-sm">Debt</span>
                   </Button>
                 </div>
               </CardContent>
